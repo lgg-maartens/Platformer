@@ -5,29 +5,48 @@ class Player{
     this.y = 300;
     this.w = 30;
     this.h = 30;
-    this.color = 0;
+    this.color = [255, 204, 0];
     this.jumps = 1;
+    this.isOnGround = false;
+    
 
-    this.prevX = this.x;
-    this.prevY = this.y;
+    // for easy readable calculation
+    this.halfWidth = this.w / 2;
+    this.halfHeight = this.h / 2 ;
 
     // jump variable
     this.maxJumpframes = 20;
+    this.framesJumped = 0;
   }
 
   move(){
+
+    // start with gravity
+    this.gravity();
+
     if (keyIsDown(LEFT_ARROW)){
-      if(!this.isColliding().includes("left"))
+      if(COLLISION != "left")
         this.x -= MOVESPEED;
     }
 
     if (keyIsDown(RIGHT_ARROW)) {
-      if(!this.isColliding().includes("right"))
+      if(COLLISION != "right")
         this.x += MOVESPEED;              
     }
 
+    // if (keyIsDown(UP_ARROW)) {
+    //   if(COLLISION != "top")
+    //     this.y -= MOVESPEED;              
+    // }
+
+    // if (keyIsDown(DOWN_ARROW)) {
+    //   if(COLLISION != "bottom")
+    //     this.y += MOVESPEED;              
+    // }
+
+    
     // spatie
-    if (keyIsDown(32)) {
+    if (keyIsDown(32)) {      
       if(this.framesJumped < this.maxJumpframes){
         this.y -= 13;
         this.framesJumped += 1;
@@ -35,68 +54,13 @@ class Player{
     }
   }
 
-  // deze functie geeft true terug als we botsen. Anders false
-  isColliding(){
-    // normaal gesproken
-    let colliding = [];
-
-    // voor elk blok controleren of we er niet tegenaan botsen
-    blocks.forEach(function(block) {
-      
-      let bottomLeft    = player.y + player.h;
-      let topRight      = player.x + player.w;
-      
-      let blockBottom   = block.y + block.h;
-      let blockRight    = block.x + block.w;     
-
-      let topCollision      = player.y >= block.y && player.y <= blockBottom;
-      let bottomCollision   = bottomLeft >= block.y && bottomLeft <= blockBottom;
-      
-      // horizontaal
-      if(bottomCollision || topCollision){
-        
-        let leftCollision   = player.x >= block.x && player.x <= blockRight;
-        let rightCollision  = topRight >= block.x && topRight <= blockRight;
-
-        //verticaal        
-        if(leftCollision || rightCollision){
-
-          let topLeftCollision      = leftCollision && topCollision;
-          let topRightCollision     = topCollision && rightCollision;
-          let bottomLeftCollision   = bottomCollision && leftCollision;
-          let bottomRightCollision  = bottomCollision && rightCollision;
-
-          //console.log(topLeftCollision, topRightCollision, bottomLeftCollision, bottomRightCollision);
-
-          //reset de positie van de player naar de randen van de box waarmee we botsen
-          if(bottomLeftCollision && bottomRightCollision){            
-            player.y = block.y - player.h;
-            colliding.push('bottom')
-          }
-
-          if(topRightCollision && bottomRightCollision){
-            player.x = block.x - player.w;
-            colliding.push('right')
-          }
-
-          if(topLeftCollision && bottomLeftCollision){
-            player.x = block.x + block.w;
-            colliding.push('left')
-          }
-
-          if(topLeftCollision && topRightCollision){
-            player.y = block.y + block.h;
-            colliding.push('top')
-          }
-        }
-      }
-    });
-
-    //console.log(colliding);
-    return colliding;
+  gravity(){
+    if(COLLISION != "bottom"){
+      this.y += FALLSPEED;
+    }
   }
-
-  draw(){
+ 
+  draw(){    
     fill(this.color)
     rect(this.x, this.y, this.w, this.h);
   }

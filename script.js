@@ -1,9 +1,8 @@
 var [WIDTH, HEIGHT] = [640, 480];
 var [MOVESPEED, FALLSPEED] = [5,5]
 
-// collision
-var lastX;
-var lastY;
+// global collision variable
+var COLLISION;
 
 // blocks
 var ground      = new Block({x:0,   y:440, w:WIDTH, h:40,   color:[0,255,0]});
@@ -24,23 +23,23 @@ function setup() {
 }
 
 function draw() {
+  // white background
   background(255);
-  fill(0);
+  fill(0);  
 
-  player.draw();
+  // set player collision
+  COLLISION = checkCollision();
 
- // alle blokken tekenen
+  // draw the blocks
   blocks.forEach(b => b.draw());
 
-  gravity();
-  player.move();
+  //draw the player
+  player.draw();  
+
+  // move
+  player.move();  
 }
 
-function gravity(){  
-  if(!player.isColliding().includes("bottom")){
-    player.y += FALLSPEED;
-  }  
-}
 
 function keyReleased() {
 	switch(keyCode) {
@@ -48,4 +47,62 @@ function keyReleased() {
 			player.framesJumped = 0;
 			break;
 	}
+}
+
+function checkCollision(){   
+
+  colliding = false;
+
+  // voor elk blok controleren of we er niet tegenaan botsen
+  blocks.forEach(function(block) {
+
+    let dx = (player.x + player.halfWidth) - (block.x + block.halfWidth);
+    let dy = (player.y + player.halfHeight) - (block.y + block.halfHeight);
+
+    let combinedHalfWidths  = player.halfWidth + block.halfWidth;
+    let combinedHalfHeights = player.halfHeight + block.halfHeight;
+
+    // x-axis collision?
+    if(Math.abs(dx) < combinedHalfWidths){
+      
+      // y-axis collision?
+      if(Math.abs(dy) < combinedHalfHeights){          
+
+        let overlapX = combinedHalfWidths - Math.abs(dx);
+        let overlapY = combinedHalfHeights - Math.abs(dy);          
+
+        // collision is on the smallest overlap
+        if(overlapX >= overlapY){
+          if(dy > 0) {
+            player.y += overlapY;
+            colliding = "top";
+          }
+          else {            
+            player.y -= overlapY;
+            colliding = "bottom";            
+          }
+        }
+        else{
+            if(dx > 0){ 
+              player.x += overlapX; 
+              colliding = "left";
+            }
+          else {
+            player.x -= overlapX;
+            colliding = "right";
+          }
+        }
+
+        // fill(0)
+        // text("overlapX: " + overlapX,10,20)
+        // text("dx: " + dx,100,20)
+        // text("overlapY: "   + overlapY,10,40)        
+        // text("dy: " + dy,100,40)
+        // text("colliding: " + colliding,10,60)
+      }
+    }
+
+  });
+
+  return colliding;
 }
