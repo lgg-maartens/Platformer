@@ -5,16 +5,14 @@ class Player{
     this.y = 300;
     this.w = 30;
     this.h = 30;
-    this.color = [255, 204, 0];
-    this.jumps = 1;
-    this.isOnGround = false;
+    this.color = [255, 204, 0];        
     
 
     // for easy readable calculation
     this.halfWidth = this.w / 2;
     this.halfHeight = this.h / 2 ;
 
-    // jump variable
+    // jump variables    
     this.maxJumpframes = 20;
     this.framesJumped = 0;
   }
@@ -25,12 +23,12 @@ class Player{
     this.gravity();
 
     if (keyIsDown(LEFT_ARROW)){
-      if(COLLISION != "left")
+      if(COLLISION != "left" && this.x >= 0)
         this.x -= MOVESPEED;
     }
 
     if (keyIsDown(RIGHT_ARROW)) {
-      if(COLLISION != "right")
+      if(COLLISION != "right" && this.x + this.w < WIDTH)
         this.x += MOVESPEED;              
     }
 

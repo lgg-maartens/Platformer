@@ -33,10 +33,10 @@ function draw() {
   // draw the blocks
   blocks.forEach(b => b.draw());
 
-  //draw the player
+  // draw the player
   player.draw();  
 
-  // move
+  // move the player
   player.move();  
 }
 
@@ -53,9 +53,10 @@ function checkCollision(){
 
   colliding = false;
 
-  // voor elk blok controleren of we er niet tegenaan botsen
+  // check collision for each block
   blocks.forEach(function(block) {
-
+    
+    // calculate difference from x and y axis centres
     let dx = (player.x + player.halfWidth) - (block.x + block.halfWidth);
     let dy = (player.y + player.halfHeight) - (block.y + block.halfHeight);
 
@@ -83,26 +84,30 @@ function checkCollision(){
           }
         }
         else{
-            if(dx > 0){ 
-              player.x += overlapX; 
-              colliding = "left";
-            }
+          if(dx > 0){ 
+            player.x += overlapX; 
+            colliding = "left";
+          }
           else {
             player.x -= overlapX;
             colliding = "right";
           }
         }
 
-        // fill(0)
-        // text("overlapX: " + overlapX,10,20)
-        // text("dx: " + dx,100,20)
-        // text("overlapY: "   + overlapY,10,40)        
-        // text("dy: " + dy,100,40)
-        // text("colliding: " + colliding,10,60)
+        //showDebug({ overlapX:overlapX, overlapY:overlapY, dx:dx, dy:dy, colliding:colliding});
       }
     }
 
   });
 
   return colliding;
+}
+
+function showDebug(options){
+  fill(0)
+  text("overlapX: " + options.overlapX,10,20)
+  text("dx: " + options.dx,100,20)
+  text("overlapY: "   + options.overlapY,10,40)        
+  text("dy: " + options.dy,100,40)
+  text("colliding: " + options.colliding,10,60)
 }
