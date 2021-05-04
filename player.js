@@ -66,9 +66,10 @@ class Player{
           let bottomLeftCollision   = bottomCollision && leftCollision;
           let bottomRightCollision  = bottomCollision && rightCollision;
 
-          console.log(topLeftCollision, topRightCollision, bottomLeftCollision, bottomRightCollision);
+          //console.log(topLeftCollision, topRightCollision, bottomLeftCollision, bottomRightCollision);
 
-          if(bottomLeftCollision && bottomRightCollision){
+          //reset de positie van de player naar de randen van de box waarmee we botsen
+          if(bottomLeftCollision && bottomRightCollision){            
             player.y = block.y - player.h;
             colliding.push('bottom')
           }
@@ -94,9 +95,9 @@ class Player{
     //console.log(colliding);
     return colliding;
   }
+
+  draw(){
+    fill(this.color)
+    rect(this.x, this.y, this.w, this.h);
+  }
 }
-
-
-//   x   y   w  h
-// 150 410  30 30
-//   0 440 640 40
